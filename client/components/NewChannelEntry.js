@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import {connect} from 'react-redux';
-import { writeChannel, postChannel } from '../store';
+import { writeChannel, postChannel } from '../store/index';
+import { withRouter } from 'react-router';
 
 function NewChannelEntry (props) {
   return (
@@ -23,27 +24,28 @@ function NewChannelEntry (props) {
 
 /** Write your `connect` component below! **/
 
-function mapDispatchToProps(dispatch) {
+function mapDispatchToProps(dispatch, ownProps) {
   return {
      handleChange(event) {
       dispatch(writeChannel(event.target.value));
     },
     handleSubmit(event) {
       event.preventDefault();
-      console.log("target here...", event.target);
       const name = event.target.channelName.value;
-      dispatch(postChannel({name: name }))
+      dispatch(postChannel({name}, ownProps.history))
+      dispatch(writeChannel(''));
     }
   };
 }
 
 
-function mapStateToProps (state) {
+function mapStateToProps (state, ownProps) {
   return {
     newChannelEntry: state.newChannelEntry
   };
-};
+}
 
-const NewChannelEntryContainer = connect(mapStateToProps, mapDispatchToProps)(NewChannelEntry);
+
+const NewChannelEntryContainer = withRouter(connect(mapStateToProps, mapDispatchToProps)(NewChannelEntry));
 
 export default NewChannelEntryContainer;

@@ -4,7 +4,7 @@ import Sidebar from './Sidebar';
 import Navbar from './Navbar';
 import MessagesList from './MessagesList';
 import NewChannelEntry from './NewChannelEntry';
-import store, { fetchMessages, fetchChannel } from '../store';
+import store, { fetchMessages, fetchChannel } from '../store/index';
 
 export default class Main extends Component {
 
