@@ -11,7 +11,6 @@ import {connect} from 'react-redux';
 // const LUNCH_CHANNEL = '/channels/4';
 
 function ChannelList (props) {
-  console.log('----props---',props)
   const channels = props.channelList;
   const messages = props.messages;
   // console.log(messages);

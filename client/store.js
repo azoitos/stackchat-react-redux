@@ -11,6 +11,7 @@ const initialState = {
   messages: [],
   name: 'Reggie',
   newMessageEntry: '',
+  newChannelEntry: '',
   channelList: []
 };
 
@@ -21,6 +22,8 @@ const GET_MESSAGE = 'GET_MESSAGE';
 const GET_MESSAGES = 'GET_MESSAGES';
 const WRITE_MESSAGE = 'WRITE_MESSAGE';
 const GET_CHANNELS = 'GET_CHANNELS';
+const WRITE_CHANNEL = 'WRITE_CHANNEL';
+const GET_CHANNEL = 'GET_CHANNEL';
 
 // ACTION CREATORS
 
@@ -44,10 +47,21 @@ export function writeMessage (content) {
   return action;
 }
 
-export function getChannel (channel) {
-  const action = { type: GET_CHANNELS, channelList: channel };
+export function getChannels (channels) {
+  const action = { type: GET_CHANNELS, channelList: channels };
   return action;
 }
+
+export function writeChannel(content) {
+  const action = { type: WRITE_CHANNEL, content };
+  return action;
+}
+
+export function getChannel (channel) {
+  const action = { type: GET_CHANNEL, channelList: channel };
+  return action;
+}
+
 
 // THUNK CREATORS
 
@@ -82,9 +96,21 @@ export function fetchChannel () {
     return axios.get('/api/channels')
       .then(res => res.data)
       .then(channels => {
-        const action = getChannel(channels);
+        const action = getChannels(channels);
         dispatch(action);
       })
+  }
+}
+
+export function postChannel (channel) {
+  return function thunk (dispatch) {
+    return axios.post('/api/channels', channel)
+      .then(res => res.data)
+      .then(newChannel => {
+        const action = getChannel(newChannel);
+        dispatch(action);
+        socket.emit('new-channel', newChannel);
+      });
   }
 }
 
@@ -139,11 +165,24 @@ function reducer (state = initialState, action) {
         ...state,
         newMessageEntry: action.content
       };
+
     case GET_CHANNELS:
       return {
         ...state,
         channelList:  action.channelList
       };
+    case WRITE_CHANNEL:
+      return {
+        ...state,
+        newChannelEntry: action.content
+      };
+
+    case GET_CHANNEL: 
+      return {
+        ...state,
+        channelList: [...state.channelList, action.channelList]
+      };
+
     default:
       return state;
   }
