@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-export default function NewChannelEntry (props) {
+export function NewChannelEntry (props) {
   return (
     <form>
       <div className="form-group">
